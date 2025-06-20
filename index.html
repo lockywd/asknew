@@ -1,64 +1,220 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sana Özel Puzzle</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(to bottom, #ffe6f0, #e6f7ff);
-      height: 100vh;
-      overflow: hidden;
-    }
-    #puzzle-container {
-      width: 90vmin;
-      height: 90vmin;
-      max-width: 600px;
-      max-height: 600px;
-      border: 5px solid #fff;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
-    }
-    #message {
-      font-size: 1.5em;
-      color: #c80076;
-      text-align: center;
-      display: none;
-      animation: fadeIn 2s forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senin İçin Bir Sürprizim Var!</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8e8e8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 90%;
+        }
+
+        h1 {
+            color: #d23669;
+            margin-bottom: 20px;
+        }
+
+        #puzzle-container {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            margin-bottom: 20px;
+        }
+
+        .puzzle-piece {
+            width: 100%;
+            height: 100%;
+            background-size: 300px 300px;
+            cursor: pointer;
+            border: 1px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .puzzle-piece:hover {
+            transform: scale(1.02);
+        }
+
+        #message {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            max-width: 300px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        #message p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #d23669;
+        }
+
+        #restart-btn {
+            background-color: #d23669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 400px) {
+            #puzzle-container {
+                width: 270px;
+                height: 270px;
+            }
+            
+            .puzzle-piece {
+                background-size: 270px 270px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div id="puzzle-container"></div>
-  <div id="message">Bu fotoğrafın her parçası gibi, kalbimin her köşesi sana ait aşkım...<br>Sen benim en güzel tamamlanmış yapbozumsun 💙</div>
+    <div class="container">
+        <h1>Bizim Hikayemiz</h1>
+        <div id="puzzle-container"></div>
+        <div id="message" class="hidden">
+            <p>Bu fotoğrafın her parçası gibi, kalbimin her köşesi sana ait aşkım... Sen benim en güzel tamamlanmış yapbozumsun 💙</p>
+            <button id="restart-btn">Tekrar Oyna</button>
+        </div>
+    </div>
 
-  <audio autoplay loop>
-    <source src="https://cdn.pixabay.com/audio/2022/03/14/audio_3875f47b0e.mp3" type="audio/mpeg">
-  </audio>
-
-  <script src="https://cdn.jsdelivr.net/npm/js-image-puzzle@1.0.3/dist/image-puzzle.min.js"></script>
-  <script>
-    const puzzle = new Puzzle({
-      container: document.getElementById('puzzle-container'),
-      image: 'puzzle_image.jpg',
-      rows: 3,
-      columns: 3,
-      onComplete: () => {
-        document.getElementById('message').style.display = 'block';
-      }
-    });
-  </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const puzzleContainer = document.getElementById('puzzle-container');
+            const message = document.getElementById('message');
+            const restartBtn = document.getElementById('restart-btn');
+            
+            // RESMİNİZİN LİNKİNİ BURAYA EKLEYİN (YOUR_IMAGE_URL yazan yeri değiştirin)
+            const imageUrl = 'https://raw.githubusercontent.com/lockywd/asknew/refs/heads/main/puzzle_image.jpg';
+            
+            // 3x3 puzzle oluştur
+            const rows = 3;
+            const cols = 3;
+            let pieces = [];
+            
+            function initPuzzle() {
+                puzzleContainer.innerHTML = '';
+                message.classList.add('hidden');
+                
+                // Puzzle parçalarını oluştur
+                for (let i = 0; i < rows * cols; i++) {
+                    const piece = document.createElement('div');
+                    piece.className = 'puzzle-piece';
+                    
+                    // Rastgele pozisyon için
+                    const row = Math.floor(i / cols);
+                    const col = i % cols;
+                    
+                    piece.style.backgroundImage = `url(${imageUrl})`;
+                    piece.style.backgroundPosition = `-${col * (300/cols)}px -${row * (300/rows)}px`;
+                    
+                    // Puzzle parçasını karıştır
+                    piece.dataset.order = i;
+                    piece.addEventListener('click', () => movePiece(piece));
+                    
+                    puzzleContainer.appendChild(piece);
+                    pieces.push(piece);
+                }
+                
+                // Puzzle'ı karıştır
+                shufflePuzzle();
+            }
+            
+            function shufflePuzzle() {
+                const piecesArray = Array.from(pieces);
+                piecesArray.sort(() => Math.random() - 0.5);
+                
+                piecesArray.forEach((piece, index) => {
+                    puzzleContainer.appendChild(piece);
+                    piece.dataset.currentPos = index;
+                });
+            }
+            
+            function movePiece(piece) {
+                const emptyPos = findEmptyPosition();
+                const piecePos = parseInt(piece.dataset.currentPos);
+                
+                if (isAdjacent(piecePos, emptyPos)) {
+                    // Pozisyonları değiştir
+                    swapPieces(piecePos, emptyPos);
+                    
+                    // Kazanıp kazanmadığını kontrol et
+                    if (checkWin()) {
+                        setTimeout(() => {
+                            message.classList.remove('hidden');
+                        }, 500);
+                    }
+                }
+            }
+            
+            function findEmptyPosition() {
+                const pieces = document.querySelectorAll('.puzzle-piece');
+                for (let i = 0; i < pieces.length; i++) {
+                    if (!pieces[i].dataset.currentPos) return i;
+                }
+                return pieces.length - 1;
+            }
+            
+            function isAdjacent(pos1, pos2) {
+                const row1 = Math.floor(pos1 / cols);
+                const col1 = pos1 % cols;
+                const row2 = Math.floor(pos2 / cols);
+                const col2 = pos2 % cols;
+                
+                return (Math.abs(row1 - row2) === 1 && col1 === col2) || 
+                       (Math.abs(col1 - col2) === 1 && row1 === row2);
+            }
+            
+            function swapPieces(pos1, pos2) {
+                const pieces = document.querySelectorAll('.puzzle-piece');
+                const temp = pieces[pos1].dataset.currentPos;
+                pieces[pos1].dataset.currentPos = pieces[pos2].dataset.currentPos;
+                pieces[pos2].dataset.currentPos = temp;
+                
+                puzzleContainer.insertBefore(pieces[pos1], pieces[pos2]);
+            }
+            
+            function checkWin() {
+                const pieces = document.querySelectorAll('.puzzle-piece');
+                for (let i = 0; i < pieces.length; i++) {
+                    if (parseInt(pieces[i].dataset.order) !== parseInt(pieces[i].dataset.currentPos)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
+            restartBtn.addEventListener('click', initPuzzle);
+            
+            // Puzzle'ı başlat
+            initPuzzle();
+        });
+    </script>
 </body>
 </html>
