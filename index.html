@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sana Özel Puzzle</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to bottom, #ffe6f0, #e6f7ff);
+      height: 100vh;
+      overflow: hidden;
+    }
+    #puzzle-container {
+      width: 90vmin;
+      height: 90vmin;
+      max-width: 600px;
+      max-height: 600px;
+      border: 5px solid #fff;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+    }
+    #message {
+      font-size: 1.5em;
+      color: #c80076;
+      text-align: center;
+      display: none;
+      animation: fadeIn 2s forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div id="puzzle-container"></div>
+  <div id="message">Bu fotoğrafın her parçası gibi, kalbimin her köşesi sana ait aşkım...<br>Sen benim en güzel tamamlanmış yapbozumsun 💙</div>
+
+  <audio autoplay loop>
+    <source src="https://cdn.pixabay.com/audio/2022/03/14/audio_3875f47b0e.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/js-image-puzzle@1.0.3/dist/image-puzzle.min.js"></script>
+  <script>
+    const puzzle = new Puzzle({
+      container: document.getElementById('puzzle-container'),
+      image: 'puzzle_image.jpg',
+      rows: 3,
+      columns: 3,
+      onComplete: () => {
+        document.getElementById('message').style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
